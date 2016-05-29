@@ -1,9 +1,9 @@
 package no.javazone.poll
 
 import org.eclipse.paho.client.mqttv3.MqttMessage
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.{FunSpec, Inside, Matchers}
 
-class MessageSpec extends FunSpec with Matchers {
+class MessageSpec extends FunSpec with Matchers with Inside {
   val mac: String = "5C:CF:7F:06:00:00"
 
   describe("vote topic") {
@@ -12,13 +12,19 @@ class MessageSpec extends FunSpec with Matchers {
     it("should parse correctly") {
       val msg: Message = Message(voteTopic, mqttMsg("1"))
 
-      msg should be(VoteMessage(mac, 1))
+      inside(msg) { case VoteMessage(_, macAddress, buttonValue) =>
+        macAddress should be(mac)
+        buttonValue should be(1)
+      }
     }
 
     it("should not parse non number content") {
       val msg: Message = Message(voteTopic, mqttMsg("a"))
 
-      msg should be(ParseFaultMessage(voteTopic, "a"))
+      inside(msg) { case ParseFaultMessage(_, topic, content) =>
+        topic should be(voteTopic)
+        content should be("a")
+      }
     }
   }
 
@@ -28,13 +34,19 @@ class MessageSpec extends FunSpec with Matchers {
     it("should parse correctly") {
       val msg: Message = Message(onlineTopic, mqttMsg("true"))
 
-      msg should be(OnlineMessage(mac, online = true))
+      inside(msg) { case OnlineMessage(_, macAddress, online) =>
+        macAddress should be(mac)
+        online should be(true)
+      }
     }
 
     it("should not parse non number content") {
       val msg: Message = Message(onlineTopic, mqttMsg("a"))
 
-      msg should be(ParseFaultMessage(onlineTopic, "a"))
+      inside(msg) { case ParseFaultMessage(_, topic, content) =>
+        topic should be(onlineTopic)
+        content should be("a")
+      }
     }
   }
 
@@ -45,13 +57,19 @@ class MessageSpec extends FunSpec with Matchers {
     it("should give unknown message") {
       val msg: Message = Message(unknownTopic, mqttMsg("1"))
 
-      msg should be(UnknownMessage(unknownTopic, "1"))
+      inside(msg) { case UnknownMessage(_, topic, content) =>
+        topic should be(unknownTopic)
+        content should be("1")
+      }
     }
 
     it("should give unknown message for sub pollerbox topic") {
       val msg: Message = Message(unknownPollerboxTopic, mqttMsg("1"))
 
-      msg should be(UnknownMessage(unknownPollerboxTopic, "1"))
+      inside(msg) { case UnknownMessage(_, topic, content) =>
+        topic should be(unknownPollerboxTopic)
+        content should be("1")
+      }
     }
   }
 
