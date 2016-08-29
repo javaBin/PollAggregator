@@ -2,7 +2,12 @@ package no.javazone.poll
 
 import scala.util.Properties
 
-case class ServerConfiguration(mqttUrl: String, mqttPort: Int)
+case class MqttConfig(
+    url: String,
+    port: Int)
+
+case class ServerConfiguration(
+    mqtt: MqttConfig)
 
 object DefaultConfig {
 
@@ -10,7 +15,7 @@ object DefaultConfig {
     val mqttUrl: String = propsOrEnv("mqtt.url").get
     val mqttPort: Int = propsOrEnv("mqtt.port").map(_.toInt).getOrElse(1883)
 
-    ServerConfiguration(mqttUrl, mqttPort)
+    ServerConfiguration(MqttConfig(mqttUrl, mqttPort))
   }
 
   private def propsOrEnv(key: String): Option[String] = {

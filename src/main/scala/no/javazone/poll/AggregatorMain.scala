@@ -5,8 +5,8 @@ object AggregatorMain extends App {
   println("Starting app")
   private val config: ServerConfiguration = DefaultConfig()
   private val fetcher: MqttFetcher = new MqttFetcher(
-    config.mqttUrl,
-    config.mqttPort)
+    config.mqtt.url,
+    config.mqtt.port)
 
   while (true) {
     if (!fetcher.connected) {
