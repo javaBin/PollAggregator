@@ -1,6 +1,10 @@
 package no.javazone.poll
 
-import no.javazone.poll.storage.Migration
+import doobie.contrib.hikari.hikaritransactor.HikariTransactor
+import doobie.imports.Transactor
+import no.javazone.poll.storage.{Migration, StorageService}
+
+import scalaz.concurrent.Task
 
 object AggregatorMain extends App {
 
@@ -9,9 +13,19 @@ object AggregatorMain extends App {
 
   Migration.runMigration(config.db)
 
+  val xa = for {
+    xa <- HikariTransactor[Task](
+      config.db.driver, config.db.connectionUrl, config.db.username, config.db.password)
+    _ <- xa.configure(hxa =>
+      Task.delay {
+        hxa.setMaximumPoolSize(10)
+      })
+  } yield xa
+
+  private val run: Transactor[Task] = xa.run
   private val fetcher: MqttFetcher = new MqttFetcher(
-    config.mqtt.url,
-    config.mqtt.port)
+    config.mqtt,
+    new StorageService(xa.run))
 
   while (true) {
     if (!fetcher.connected) {
