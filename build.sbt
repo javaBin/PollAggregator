@@ -24,7 +24,7 @@ val commonSettings = Seq(
   },
   target in App := target.value / "appmgr" / "root",
   packageBin in Appmgr <<= (packageBin in Appmgr).dependsOn(packageBin in App),
-  appmgrLauncher in Appmgr := (appmgrLauncher in Appmgr).value.map(_.copy(command = "jetty", name = "poll-aggregator")),
+  appmgrLauncher in Appmgr := (appmgrLauncher in Appmgr).value.map(_.copy(command = "aggregatormain", name = "pollaggregator")),
   aether.AetherKeys.aetherArtifact <<= (aether.AetherKeys.aetherArtifact, (packageBin in Appmgr)) map { (art, build) =>
     art.attach(build, "appmgr", "zip")
   },
