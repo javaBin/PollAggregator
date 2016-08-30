@@ -1,7 +1,6 @@
 package no.javazone.poll
 
 import doobie.contrib.hikari.hikaritransactor.HikariTransactor
-import doobie.imports.Transactor
 import no.javazone.poll.storage.{Migration, StorageService}
 
 import scalaz.concurrent.Task
@@ -22,7 +21,6 @@ object AggregatorMain extends App {
       })
   } yield xa
 
-  private val run: Transactor[Task] = xa.run
   private val fetcher: MqttFetcher = new MqttFetcher(
     config.mqtt,
     new StorageService(xa.run))
