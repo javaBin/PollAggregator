@@ -2,6 +2,7 @@ package no.javazone.poll
 
 import doobie.contrib.hikari.hikaritransactor.HikariTransactor
 import no.javazone.poll.storage.{Migration, StorageService}
+import org.http4s.server.blaze.BlazeBuilder
 
 import scalaz.concurrent.Task
 
@@ -25,6 +26,13 @@ object AggregatorMain extends App {
     config.mqtt,
     new StorageService(xa.run))
 
+  val builder = BlazeBuilder.bindHttp(8086, "localhost")
+      .mountService(Api.services, "/api")
+
+  println("starting http server")
+  builder.run
+
+  println("starting fetching mqtt messages")
   while (true) {
     if (!fetcher.connected) {
       fetcher.connectToServer()
