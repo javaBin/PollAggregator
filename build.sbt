@@ -4,7 +4,7 @@ val commonSettings = Seq(
   organization := "no.javazone.poll",
   scalaVersion := "2.11.8",
   name := "PollAggregator",
-  crossScalaVersions := Seq("2.11.7"),
+  crossScalaVersions := Seq("2.11.8"),
   scalacOptions := Seq("-deprecation", "-feature"),
   pomIncludeRepository := {
     x => false
@@ -61,13 +61,20 @@ val database = Seq(
   "com.zaxxer"     %  "HikariCP"                  % "2.4.7"
 )
 
+lazy val http4sVersion = "0.14.4"
+
+val http4s = Seq(
+  "org.http4s" %% "http4s-dsl" % http4sVersion,
+  "org.http4s" %% "http4s-blaze-server" % http4sVersion
+)
+
 lazy val app = (project in file(".")).
     settings(commonSettings).
     settings(Revolver.settings).
     settings(libraryDependencies ++= Seq(
       "org.eclipse.paho" % "org.eclipse.paho.client.mqttv3" % "1.0.2",
       "org.scalatest" %% "scalatest" % "2.2.6" % "test"
-    ) ++ database)
+    ) ++ database ++ http4s)
 
 
 enablePlugins(BuildInfoPlugin)
