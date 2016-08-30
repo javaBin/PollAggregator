@@ -1,6 +1,6 @@
 package no.javazone.poll.storage
 
-import java.time.{LocalDateTime, ZoneOffset}
+import java.time.{Instant, LocalDateTime, ZoneOffset}
 
 import doobie.util.meta.Meta
 import doobie.util.meta.Meta._
@@ -12,8 +12,8 @@ trait MetaImplicit {
 
   implicit val LocalDateTimeType: Meta[LocalDateTime] =
     Meta[java.sql.Timestamp].nxmap(
-      ts => LocalDateTime.ofEpochSecond(ts.getTime, 0, ZoneOffset.UTC),
-      dt => new java.sql.Timestamp(dt.toEpochSecond(ZoneOffset.UTC))
+      ts => Instant.ofEpochMilli(ts.getTime).atZone(ZoneOffset.UTC).toLocalDateTime,
+      dt => new java.sql.Timestamp(dt.toInstant(ZoneOffset.UTC).toEpochMilli)
     )
 
   implicit val MacAddrType = Meta.other[PGobject]("macaddr")
