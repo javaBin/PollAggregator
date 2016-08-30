@@ -23,8 +23,8 @@ case class ServerConfiguration(
 object DefaultConfig {
 
   def apply(): ServerConfiguration = {
-    val mqttUrl: String = propsOrEnv("mqtt.url").get
-    val mqttPort: Int = propsOrEnv("mqtt.port").map(_.toInt).getOrElse(1883)
+    val mqttUrl: String = propsOrEnv("mqtt_url").get
+    val mqttPort: Int = propsOrEnv("mqtt_port").map(_.toInt).getOrElse(1883)
 
 
     ServerConfiguration(
@@ -33,7 +33,7 @@ object DefaultConfig {
   }
 
   private def propsOrEnv(key: String): Option[String] =
-    propOrNone(key).orElse(envOrNone(key))
+    propOrNone(key).orElse(envOrNone(key.toUpperCase))
 
 }
 
