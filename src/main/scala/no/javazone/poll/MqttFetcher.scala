@@ -25,7 +25,7 @@ class MqttFetcher(mqtt: MqttConfig, storage: StorageService) {
       msg match {
         case o @ OnlineMessage(_,_,_) => storage.onlineEvent(o).retry(retryDur).runAsync(logErrors)
         case v @ VoteMessage(_, _, _) => storage.voteEvent(v).retry(retryDur).runAsync(logErrors)
-        case u => println("unhandled msg: $u")
+        case u => println(s"unhandled msg: $u")
       }
     }
 
