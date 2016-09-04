@@ -17,7 +17,7 @@ class StorageService(xa: Transactor[Task]) {
 
   def voteEvent(msg: VoteMessage): Task[Int] = {
     val res = for {
-      boxId <- BoxesQueries.findBoxId(msg.mac, 0).unique
+      boxId <- BoxesQueries.findBoxMac(msg.mac).unique
       id <- EventQueries.insertEvent(msg, boxId).withUniqueGeneratedKeys[Int]("id")
     } yield id
 
