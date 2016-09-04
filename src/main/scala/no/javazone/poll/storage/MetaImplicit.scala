@@ -4,6 +4,7 @@ import java.time.{Instant, LocalDateTime, ZoneOffset}
 
 import doobie.util.meta.Meta
 import doobie.util.meta.Meta._
+import no.javazone.poll.MacAddress
 import org.postgresql.util.PGobject
 
 import scalaz.Scalaz._
@@ -17,9 +18,9 @@ trait MetaImplicit {
     )
 
   implicit val MacAddrType = Meta.other[PGobject]("macaddr")
-      .xmap[String](
-    a => a.getValue,
-    b => new PGobject <| (_.setType("macaddr")) <| (_.setValue(b))
+      .xmap[MacAddress](
+    a => MacAddress(a.getValue),
+    b => new PGobject <| (_.setType("macaddr")) <| (_.setValue(b.address))
   )
 
 }

@@ -11,13 +11,13 @@ sealed trait Message
 
 case class VoteMessage(
     occurred: LocalDateTime,
-    mac: String,
+    mac: MacAddress,
     buttonValue: Int
 ) extends Message
 
 case class OnlineMessage(
     occurred: LocalDateTime,
-    mac: String,
+    mac: MacAddress,
     online: Boolean
 ) extends Message
 
@@ -40,14 +40,14 @@ object Message {
       case "pollerbox" :: mac :: "vote" :: Nil =>
         parse(VoteMessage(
           now(),
-          mac,
+          MacAddress(mac),
           new String(message.getPayload).toInt),
           topic,
           message)
       case "pollerbox" :: mac :: "online" :: Nil =>
         parse(OnlineMessage(
           now(),
-          mac,
+          MacAddress(mac),
           new String(message.getPayload).toBoolean),
           topic,
           message)

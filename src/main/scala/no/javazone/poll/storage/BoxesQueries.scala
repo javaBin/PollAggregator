@@ -1,7 +1,7 @@
 package no.javazone.poll.storage
 
 import doobie.imports._
-import no.javazone.poll.OnlineMessage
+import no.javazone.poll.{MacAddress, OnlineMessage}
 
 object BoxesQueries extends MetaImplicit{
 
@@ -25,7 +25,7 @@ object BoxesQueries extends MetaImplicit{
          """.update
   }
 
-  def findBoxMac(mac: String): Query0[Int] = {
+  def findBoxMac(mac: MacAddress): Query0[Int] = {
     sql"""
           SELECT id FROM boxes
           WHERE mac = $mac
