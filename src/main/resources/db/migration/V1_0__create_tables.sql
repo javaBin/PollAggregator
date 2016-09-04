@@ -1,9 +1,7 @@
 CREATE TABLE boxes (
   id     SERIAL PRIMARY KEY,
   mac    MACADDR NOT NULL,
-  label  INTEGER NOT NULL,
-  online BOOLEAN NOT NULL,
-  UNIQUE (mac, label)
+  online BOOLEAN NOT NULL
 );
 
 CREATE TABLE labels (
