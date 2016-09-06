@@ -21,6 +21,12 @@ case class OnlineMessage(
     online: Boolean
 ) extends Message
 
+case class SerialLabelMessage(
+    occurred: LocalDateTime,
+    mac: MacAddress,
+    id: Int
+) extends Message
+
 case class ParseFaultMessage(
     occurred: LocalDateTime,
     topic: String,
@@ -49,6 +55,13 @@ object Message {
           now(),
           MacAddress(mac),
           new String(message.getPayload).toBoolean),
+          topic,
+          message)
+      case "pollerbox" ::  mac :: "serial" :: Nil =>
+        parse(SerialLabelMessage(
+          now(),
+          MacAddress(mac),
+          new String(message.getPayload).toInt),
           topic,
           message)
       case _ => UnknownMessage(
