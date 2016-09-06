@@ -22,12 +22,14 @@ object AggregatorMain extends App {
       })
   } yield xa
 
+  private val storage = new  StorageService(xa.run)
+
   private val fetcher: MqttFetcher = new MqttFetcher(
     config.mqtt,
     new StorageService(xa.run))
 
   val builder = BlazeBuilder.bindHttp(8086, "localhost")
-      .mountService(Api.services, "/api")
+      .mountService(Api.services(storage), "/api")
 
   println("starting http server")
   builder.run
