@@ -73,7 +73,9 @@ lazy val app = (project in file(".")).
     settings(Revolver.settings).
     settings(libraryDependencies ++= Seq(
       "org.eclipse.paho" % "org.eclipse.paho.client.mqttv3" % "1.0.2",
-      "org.scalatest" %% "scalatest" % "2.2.6" % "test"
+      "org.scalatest" %% "scalatest" % "2.2.6" % "test",
+      "ch.qos.logback" % "logback-core" % "1.1.7",
+      "ch.qos.logback" % "logback-classic" % "1.1.7"
     ) ++ database ++ http4s)
 
 
