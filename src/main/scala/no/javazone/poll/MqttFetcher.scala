@@ -33,17 +33,22 @@ class MqttFetcher(mqtt: MqttConfig, storage: StorageService) {
     override def connectionLost(cause: Throwable): Unit = {
       println(s"connection lost ${cause.getMessage}")
       cause.printStackTrace()
+      client.disconnectForcibly()
+      client.connect(mqttOptions)
     }
   })
 
   def connectToServer(): Unit = {
     println(s"Connecting to server ${client.getServerURI}")
+    client.connect(mqttOptions)
+    client.subscribe("pollerbox/#")
+  }
+
+  def mqttOptions: MqttConnectOptions = {
     val options: MqttConnectOptions = new MqttConnectOptions()
     options.setKeepAliveInterval(60)
     options.setConnectionTimeout(60)
-
-    client.connect(options)
-    client.subscribe("pollerbox/#")
+    options
   }
 
   def connected: Boolean = {
