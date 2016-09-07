@@ -1,5 +1,7 @@
 package no.javazone.poll
 
+import java.util.UUID
+
 import no.javazone.poll.storage.StorageService
 import org.eclipse.paho.client.mqttv3._
 
@@ -10,7 +12,7 @@ import scalaz.\/
 class MqttFetcher(mqtt: MqttConfig, storage: StorageService) {
   private val retryDur: Seq[FiniteDuration] = Seq(100 millis, 200 millis, 500 millis)
 
-  private val client: MqttClient = new MqttClient(s"tcp://${mqtt.url}:${mqtt.port}", "PollAgg")
+  private val client: MqttClient = new MqttClient(s"tcp://${mqtt.url}:${mqtt.port}", "PollAgg" + UUID.randomUUID())
 
   client.setCallback(new MqttCallback {
 
@@ -37,20 +39,28 @@ class MqttFetcher(mqtt: MqttConfig, storage: StorageService) {
   })
 
   def connectToServer(): Unit = {
-    println(s"Connecting to server ${client.getServerURI}")
-    client.connect(mqttOptions)
-    client.subscribe("pollerbox/#")
+    try {
+      println(s"Connecting to server ${client.getServerURI}")
+      client.connect(mqttOptions)
+      client.subscribe("pollerbox/#")
+    } catch {
+      case e: Exception => {
+        println("unable to connect")
+        e.printStackTrace()
+      };
+    }
+
   }
 
   def mqttOptions: MqttConnectOptions = {
     val options: MqttConnectOptions = new MqttConnectOptions()
-    options.setKeepAliveInterval(60)
-    options.setConnectionTimeout(60)
+    options.setKeepAliveInterval(15)
+    options.setConnectionTimeout(15)
     options
   }
 
   def connected: Boolean = {
-    client.isConnected
+    client.isConnected()
   }
 }
 

@@ -39,7 +39,7 @@ object AggregatorMain extends App {
     if (!fetcher.connected) {
       fetcher.connectToServer()
     }
-    Thread.sleep(10)
+    Thread.sleep(100)
   }
   println("Stopped App")
 }
