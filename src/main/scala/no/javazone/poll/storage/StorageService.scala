@@ -3,7 +3,7 @@ package no.javazone.poll.storage
 import java.time.LocalDateTime
 
 import doobie.imports._
-import no.javazone.poll.{OnlineMessage, VoteMessage}
+import no.javazone.poll.{OnlineMessage, SerialLabelMessage, VoteMessage}
 
 import scalaz.concurrent.Task
 
@@ -23,6 +23,14 @@ class StorageService(xa: Transactor[Task]) {
       id <- EventQueries.insertEvent(msg, boxId).withUniqueGeneratedKeys[Int]("id")
     } yield id
 
+    res.transact(xa)
+  }
+
+  def setBoxLabel(msg: SerialLabelMessage): Task[Unit] = {
+    val res = for {
+      boxId <- BoxesQueries.findBoxMac(msg.mac).unique
+      _ <- LabelsQueries.ensureCreatedLabel(boxId, s"serial_${msg.id}").withUniqueGeneratedKeys[Int]("id")
+    } yield ()
     res.transact(xa)
   }
 
