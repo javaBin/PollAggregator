@@ -28,7 +28,7 @@ object AggregatorMain extends App {
     config.mqtt,
     new StorageService(xa.run))
 
-  val builder = BlazeBuilder.bindHttp(8086, "localhost")
+  val builder = BlazeBuilder.bindHttp(9243, "localhost")
       .mountService(Api.services(storage), "/api")
 
   println("starting http server")
