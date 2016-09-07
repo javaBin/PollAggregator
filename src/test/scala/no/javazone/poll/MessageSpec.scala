@@ -13,7 +13,7 @@ class MessageSpec extends FunSpec with Matchers with Inside {
       val msg: Message = Message(voteTopic, mqttMsg("1"))
 
       inside(msg) { case VoteMessage(_, macAddress, buttonValue) =>
-        macAddress should be(mac)
+        macAddress should be(MacAddress(mac))
         buttonValue should be(1)
       }
     }
@@ -35,7 +35,7 @@ class MessageSpec extends FunSpec with Matchers with Inside {
       val msg: Message = Message(onlineTopic, mqttMsg("true"))
 
       inside(msg) { case OnlineMessage(_, macAddress, online) =>
-        macAddress should be(mac)
+        macAddress should be(MacAddress(mac))
         online should be(true)
       }
     }
