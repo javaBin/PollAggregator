@@ -1,7 +1,7 @@
 package no.javazone.poll
 
 import no.javazone.poll.storage.StorageService
-import org.eclipse.paho.client.mqttv3.{IMqttDeliveryToken, MqttCallback, MqttClient, MqttMessage}
+import org.eclipse.paho.client.mqttv3._
 
 import scala.concurrent.duration.{DurationLong, FiniteDuration}
 import scala.language.postfixOps
@@ -38,7 +38,11 @@ class MqttFetcher(mqtt: MqttConfig, storage: StorageService) {
 
   def connectToServer(): Unit = {
     println(s"Connecting to server ${client.getServerURI}")
-    client.connect()
+    val options: MqttConnectOptions = new MqttConnectOptions()
+    options.setKeepAliveInterval(60)
+    options.setConnectionTimeout(60)
+
+    client.connect(options)
     client.subscribe("pollerbox/#")
   }
 
