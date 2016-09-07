@@ -12,7 +12,9 @@ import scalaz.\/
 class MqttFetcher(mqtt: MqttConfig, storage: StorageService) {
   private val retryDur: Seq[FiniteDuration] = Seq(100 millis, 200 millis, 500 millis)
 
-  private val client: MqttClient = new MqttClient(s"tcp://${mqtt.url}:${mqtt.port}", "PollAgg" + UUID.randomUUID())
+  private val clientId: String = "PollAgg_" + UUID.randomUUID()
+  println(s"Client ID: $clientId")
+  private val client: MqttClient = new MqttClient(s"tcp://${mqtt.url}:${mqtt.port}", clientId)
 
   client.setCallback(new MqttCallback {
 
