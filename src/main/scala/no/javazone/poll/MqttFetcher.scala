@@ -33,8 +33,6 @@ class MqttFetcher(mqtt: MqttConfig, storage: StorageService) {
     override def connectionLost(cause: Throwable): Unit = {
       println(s"connection lost ${cause.getMessage}")
       cause.printStackTrace()
-      client.disconnectForcibly()
-      client.connect(mqttOptions)
     }
   })
 
