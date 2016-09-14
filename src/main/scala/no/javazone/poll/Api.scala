@@ -3,11 +3,17 @@ package no.javazone.poll
 import java.time.LocalDateTime
 
 import no.javazone.poll.storage.StorageService
-import org.http4s.HttpService
 import org.http4s.dsl.{Root, _}
+import org.http4s.headers.`Content-Type`
 import org.http4s.server.Router
+import org.http4s.{HttpService, MediaType}
+import org.json4s._
+import org.json4s.native.Serialization.write
 
 object Api {
+
+  implicit val formats = DefaultFormats
+  val jsonContentType: Some[`Content-Type`] = Some(`Content-Type`(MediaType.`application/json`))
 
   def services(storage: StorageService) = Router(
     "" -> root,
@@ -30,7 +36,10 @@ object Api {
 
     case req@GET -> Root / label :? From(from) +& To(to) => {
       val run = storage.votesForLabel(label, from.map(LocalDateTime.parse), to.map(LocalDateTime.parse)).run
-      Ok(run.toString)
+
+      Ok()
+          .withBody(write(run))
+          .withContentType(jsonContentType)
     }
   }
 
