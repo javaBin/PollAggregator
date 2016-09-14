@@ -38,7 +38,7 @@ class StorageService(xa: Transactor[Task]) {
       label: String,
       inFrom: Option[LocalDateTime],
       inTo: Option[LocalDateTime]
-  ): Task[Map[Int, Long]] = {
+  ): Task[Map[String, Int]] = {
     val now: LocalDateTime = LocalDateTime.now
     val from  = inFrom.getOrElse(now.minusHours(1))
     val to: LocalDateTime = inTo.getOrElse(now)
@@ -46,18 +46,15 @@ class StorageService(xa: Transactor[Task]) {
       buttonOne <- EventQueries.countValuesBetweenDates(label, 1, from, to).unique
       buttonTwo <- EventQueries.countValuesBetweenDates(label, 2, from, to).unique
       buttonTree <- EventQueries.countValuesBetweenDates(label, 3, from, to).unique
-      total = calcTotal(buttonOne, buttonTwo, buttonTree)
-    } yield Map(
-      1 -> buttonOne / total,
-      2 -> buttonTwo / total,
-      3 -> buttonTree / total)
+    } yield {
+      Map(
+        "total" -> (buttonOne + buttonTwo + buttonTree),
+        "green" -> buttonOne,
+        "yellow" -> buttonTwo,
+        "red" -> buttonTree)
+    }
 
     res.transact(xa)
-  }
-
-  def calcTotal(values: Int*): Long = {
-    val sum: Long = values.sum
-    if (sum != 0) sum else 1
   }
 
 }

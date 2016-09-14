@@ -25,6 +25,7 @@ object EventQueries extends MetaImplicit {
           SELECT count(*)
           FROM events e JOIN labels l ON l.box_id = e.box_id
           WHERE l.name = $label
+          AND e.vote = $value
           AND e.occurred BETWEEN $from AND $to
         """.query[Int]
   }
