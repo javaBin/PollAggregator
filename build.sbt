@@ -75,7 +75,8 @@ lazy val app = (project in file(".")).
       "org.eclipse.paho" % "org.eclipse.paho.client.mqttv3" % "1.0.2",
       "org.scalatest" %% "scalatest" % "2.2.6" % "test",
       "ch.qos.logback" % "logback-core" % "1.1.7",
-      "ch.qos.logback" % "logback-classic" % "1.1.7"
+      "ch.qos.logback" % "logback-classic" % "1.1.7",
+      "org.json4s"    %% "json4s-native" % "3.3.0"
     ) ++ database ++ http4s)
 
 
